@@ -65,7 +65,7 @@ main :: proc() {
 	}
 
 	player := Player {
-		position   = {60, 40},
+		position   = {90, 90},
 		y_velocity = 0.0,
 		// rect = {width = f32(assets.player_down.width), height = f32(assets.player_down.height)},
 	}
@@ -154,15 +154,14 @@ draw_player :: proc(player: Player, assets: Assets) {
 	_, is_going_up := player.up_duration.?
 	player_texture := is_going_up ? assets.player_up : assets.player_down
 
-	draw_collider(player.position, 20)
-	// rl.DrawTextureV(player_texture, player.position, rl.WHITE)
 	draw_texture(player_texture, player.position)
+	draw_collider(player.position, 20)
 }
 
 spawn_pipe :: proc(game: ^Game) {
 	random_offset := rl.GetRandomValue(-100, 100)
 	test_wall := Wall {
-		center_y   = 150 + f32(random_offset),
+		center_y   = 200 + f32(random_offset),
 		x_position = f32(PIPE_SPAWN_X),
 	}
 	append(&game.walls, test_wall)

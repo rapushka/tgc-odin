@@ -16,23 +16,28 @@ draw_texture_usual :: proc(texture: rl.Texture2D, position: Vec2) {
 
 @(private = "file")
 draw_texture_flipped :: proc(texture: rl.Texture2D, position: Vec2, flip_v: bool) {
+	render_position: Vec2 = {
+		position.x - f32(texture.width) / 2,
+		position.y - f32(texture.height) / 2,
+	}
+
 	if !flip_v {
-		rl.DrawTextureV(texture, position, rl.WHITE)
+		rl.DrawTextureV(texture, render_position, rl.WHITE)
 		return
 	}
 
-	source := get_source_rect(texture)
+	source := as_rect(texture)
 	source.height *= -1
 
-	dest := get_source_rect(texture)
-	dest.x = position.x
-	dest.y = position.y
+	dest := as_rect(texture)
+	dest.x = render_position.x
+	dest.y = render_position.y
 
 	rl.DrawTexturePro(texture, source, dest, {}, 0, rl.WHITE)
 }
 
 @(private = "file")
-get_source_rect :: proc(texture: rl.Texture2D) -> rl.Rectangle {
+as_rect :: proc(texture: rl.Texture2D) -> rl.Rectangle {
 	return rl.Rectangle {
 		width  = f32(texture.width),
 		height = f32(texture.height),
