@@ -54,11 +54,6 @@ main :: proc() {
 	defer rl.CloseWindow()
 	rl.SetTargetFPS(60)
 
-	player := Player {
-		position   = {60, 40},
-		y_velocity = 0.0,
-	}
-
 	pipe_tip := rl.LoadTexture("pipe-tip.png")
 	pipe_mid := rl.LoadTexture("pipe-mid.png")
 
@@ -67,6 +62,12 @@ main :: proc() {
 		player_down = rl.LoadTexture("player-down.png"),
 		pipe_tip    = rl.LoadTexture("pipe-tip.png"),
 		pipe_mid    = rl.LoadTexture("pipe-mid.png"),
+	}
+
+	player := Player {
+		position   = {60, 40},
+		y_velocity = 0.0,
+		// rect = {width = f32(assets.player_down.width), height = f32(assets.player_down.height)},
 	}
 
 	game := Game {
@@ -153,7 +154,9 @@ draw_player :: proc(player: Player, assets: Assets) {
 	_, is_going_up := player.up_duration.?
 	player_texture := is_going_up ? assets.player_up : assets.player_down
 
-	rl.DrawTextureV(player_texture, player.position, rl.WHITE)
+	draw_collider(player.position, 20)
+	// rl.DrawTextureV(player_texture, player.position, rl.WHITE)
+	draw_texture(player_texture, player.position)
 }
 
 spawn_pipe :: proc(game: ^Game) {

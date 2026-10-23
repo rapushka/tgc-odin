@@ -4,7 +4,18 @@ import la "core:math/linalg"
 import "vendor:directx/d3d12"
 import rl "vendor:raylib"
 
-draw_texture :: proc(texture: rl.Texture2D, position: Vec2, flip_v: bool) {
+draw_texture :: proc {
+	draw_texture_usual,
+	draw_texture_flipped,
+}
+
+@(private = "file")
+draw_texture_usual :: proc(texture: rl.Texture2D, position: Vec2) {
+	draw_texture_flipped(texture, position, false)
+}
+
+@(private = "file")
+draw_texture_flipped :: proc(texture: rl.Texture2D, position: Vec2, flip_v: bool) {
 	if !flip_v {
 		rl.DrawTextureV(texture, position, rl.WHITE)
 		return
@@ -20,6 +31,7 @@ draw_texture :: proc(texture: rl.Texture2D, position: Vec2, flip_v: bool) {
 	rl.DrawTexturePro(texture, source, dest, {}, 0, rl.WHITE)
 }
 
+@(private = "file")
 get_source_rect :: proc(texture: rl.Texture2D) -> rl.Rectangle {
 	return rl.Rectangle {
 		width  = f32(texture.width),
@@ -27,4 +39,8 @@ get_source_rect :: proc(texture: rl.Texture2D) -> rl.Rectangle {
 		x      = 0,
 		y      = 0,
 	}
+}
+
+draw_collider :: proc(position: Vec2, radius: f32) {
+	rl.DrawCircleLinesV(position, radius, rl.PINK)
 }
