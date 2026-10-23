@@ -46,6 +46,13 @@ as_rect :: proc(texture: rl.Texture2D) -> rl.Rectangle {
 	}
 }
 
-draw_collider :: proc(position: Vec2, radius: f32) {
-	rl.DrawCircleLinesV(position, radius, rl.PINK)
+draw_collider_circle :: proc(position: Vec2, radius: f32) {
+	rl.DrawCircleLinesV(position, radius, rl.GREEN)
+}
+
+draw_collider_rect :: proc(position: Vec2, sizes: Vec2) {
+	x := i32(position.x) - i32(sizes.x) / 2
+	y := i32(position.y) - i32(sizes.y) / 2
+
+	rl.DrawRectangleLines(x, y, i32(sizes.x), i32(sizes.y), rl.GREEN)
 }

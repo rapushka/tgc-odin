@@ -142,11 +142,13 @@ draw_pipe :: proc(x, y: f32, going_down: bool, assets: Assets) {
 	direction: f32 = going_down ? 1 : -1
 
 	draw_texture(assets.pipe_tip, {x, y}, !going_down)
+	draw_collider_rect({x, y}, {70, 70})
 
 	for i := 1; i < 5; i += 1 {
 		y += 100.0 * direction
 
 		draw_texture(assets.pipe_mid, {x, y}, !going_down)
+		draw_collider_rect({x, y}, {70, 100})
 	}
 }
 
@@ -155,7 +157,7 @@ draw_player :: proc(player: Player, assets: Assets) {
 	player_texture := is_going_up ? assets.player_up : assets.player_down
 
 	draw_texture(player_texture, player.position)
-	draw_collider(player.position, 20)
+	draw_collider_circle(player.position, 20)
 }
 
 spawn_pipe :: proc(game: ^Game) {
