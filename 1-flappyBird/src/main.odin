@@ -7,7 +7,7 @@ import rl "vendor:raylib"
 Vec2 :: [2]f32
 
 PLAYER_SPEED :: 20.0
-PLAYER_WING_DOWN_DURATION_S :: 0.1
+PLAYER_WING_DOWN_DURATION_S :: 0.2
 
 GRAVITY :: 400.0
 JUMP_VELOCITY :: -180.0
@@ -81,6 +81,7 @@ main :: proc() {
 	spawn_pipe(&game)
 
 	for !rl.WindowShouldClose() {
+		// # update
 		delta_time := rl.GetFrameTime()
 		handle_player(&player, delta_time)
 		move_walls(&game, delta_time)
@@ -90,9 +91,9 @@ main :: proc() {
 		rl.BeginDrawing()
 		defer rl.EndDrawing()
 
+		// # draw
 		rl.ClearBackground({160, 200, 255, 255})
 
-		// draw
 		draw_player(player, game.assets)
 
 		for wall in game.walls {
@@ -108,9 +109,8 @@ main :: proc() {
 }
 
 handle_player :: proc(player: ^Player, delta_time: f32) {
-	if (rl.IsKeyDown(.SPACE) || rl.IsKeyDown(.UP)) {
+	if (rl.IsKeyPressed(.SPACE) || rl.IsKeyPressed(.UP)) {
 		player.y_velocity = JUMP_VELOCITY
-
 		player.up_duration = PLAYER_WING_DOWN_DURATION_S
 	}
 
