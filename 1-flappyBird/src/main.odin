@@ -40,11 +40,13 @@ Player :: struct {
 	position:    Vec2,
 	y_velocity:  f32,
 	up_duration: Maybe(f32),
+	is_alive:    bool,
 }
 
 Assets :: struct {
 	player_up:   rl.Texture2D,
 	player_down: rl.Texture2D,
+	player_dead: rl.Texture2D,
 	pipe_tip:    rl.Texture2D,
 	pipe_mid:    rl.Texture2D,
 }
@@ -60,6 +62,7 @@ main :: proc() {
 	assets := Assets {
 		player_up   = rl.LoadTexture("player-up.png"),
 		player_down = rl.LoadTexture("player-down.png"),
+		player_dead = rl.LoadTexture("player-ded.png"),
 		pipe_tip    = rl.LoadTexture("pipe-tip.png"),
 		pipe_mid    = rl.LoadTexture("pipe-mid.png"),
 	}
@@ -68,6 +71,7 @@ main :: proc() {
 		position   = {90, 90},
 		y_velocity = 0.0,
 		// rect = {width = f32(assets.player_down.width), height = f32(assets.player_down.height)},
+		is_alive   = true,
 	}
 
 	game := Game {
@@ -156,6 +160,9 @@ draw_player :: proc(player: Player, assets: Assets) {
 	_, is_going_up := player.up_duration.?
 	player_texture := is_going_up ? assets.player_up : assets.player_down
 
+	if !player.is_alive {
+		player_texture = assets.player_dead
+	}
 	draw_texture(player_texture, player.position)
 	draw_collider_circle(player.position, 20)
 }
