@@ -92,10 +92,12 @@ main :: proc() {
 		spawn_new_walls(&game)
 		despawn_old_walls(&game)
 
+		check_player_collisions(&game)
+
+		// # draw
 		rl.BeginDrawing()
 		defer rl.EndDrawing()
 
-		// # draw
 		rl.ClearBackground({160, 200, 255, 255})
 
 		draw_player(player, game.assets)
@@ -191,4 +193,10 @@ despawn_old_walls :: proc(game: ^Game) {
 	if first_wall.x_position <= PIPE_DESPAWN_X {
 		pop_front(&game.walls)
 	}
+}
+
+
+check_player_collisions :: proc(game: ^Game) {
+	player := game.player
+	walls := game.walls
 }
