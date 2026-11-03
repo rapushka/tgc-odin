@@ -1,4 +1,5 @@
 {
 	"character_width": 120,
-	"multiline_composite_literals": true
+	"multiline_composite_literals": true,
+	"newline_limit": 1
 }
