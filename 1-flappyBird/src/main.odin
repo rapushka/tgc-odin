@@ -25,6 +25,12 @@ GAP_HALF_HEIGHT :: GAP_HEIGHT / 2
 SCREEN_WIDTH :: 800
 SCREEN_HEIGHT :: 450
 
+COLLIDER_PLAYER_RADIUS :: 20
+@(rodata)
+COLLIDER_PIPE_TOP: Vec2 = {70, 70}
+@(rodata)
+COLLIDER_PIPE_SIDE: Vec2 = {70, 100}
+
 Game :: struct {
 	player: Player,
 	walls:  [dynamic]Wall,
@@ -70,7 +76,6 @@ main :: proc() {
 	player := Player {
 		position   = {90, 90},
 		y_velocity = 0.0,
-		// rect = {width = f32(assets.player_down.width), height = f32(assets.player_down.height)},
 		is_alive   = true,
 	}
 
@@ -148,13 +153,13 @@ draw_pipe :: proc(x, y: f32, going_down: bool, assets: Assets) {
 	direction: f32 = going_down ? 1 : -1
 
 	draw_texture(assets.pipe_tip, {x, y}, !going_down)
-	draw_collider_rect({x, y}, {70, 70})
+	draw_collider_rect({x, y}, COLLIDER_PIPE_TOP)
 
 	for i := 1; i < 5; i += 1 {
 		y += 100.0 * direction
 
 		draw_texture(assets.pipe_mid, {x, y}, !going_down)
-		draw_collider_rect({x, y}, {70, 100})
+		draw_collider_rect({x, y}, COLLIDER_PIPE_SIDE)
 	}
 }
 
@@ -166,16 +171,16 @@ draw_player :: proc(player: Player, assets: Assets) {
 		player_texture = assets.player_dead
 	}
 	draw_texture(player_texture, player.position)
-	draw_collider_circle(player.position, 20)
+	draw_collider_circle(player.position, COLLIDER_PLAYER_RADIUS)
 }
 
 spawn_pipe :: proc(game: ^Game) {
 	random_offset := rl.GetRandomValue(-100, 100)
-	test_wall := Wall {
+	wall := Wall {
 		center_y   = 200 + f32(random_offset),
 		x_position = f32(PIPE_SPAWN_X),
 	}
-	append(&game.walls, test_wall)
+	append(&game.walls, wall)
 }
 
 spawn_new_walls :: proc(game: ^Game) {
