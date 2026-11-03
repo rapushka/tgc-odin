@@ -79,7 +79,7 @@ draw_pipe :: proc(x, y: f32, going_down: bool, assets: Assets) {
 		left_top.y + (1_000 * direction),
 	}
 
-	rect := create_rect(left_top, right_bottom)
+	rect := create_rect_from_corners(left_top, right_bottom)
 
 	draw_texture(assets.pipe_tip, {x, y}, !going_down)
 	// draw_collider_rect({x, y}, COLLIDER_PIPE_TOP)
@@ -90,5 +90,5 @@ draw_pipe :: proc(x, y: f32, going_down: bool, assets: Assets) {
 		draw_texture(assets.pipe_mid, {x, y}, !going_down)
 		// draw_collider_rect({x, y}, COLLIDER_PIPE_SIDE)
 	}
-	draw_collider_rect({rect.x, rect.y}, {rect.width, rect.height})
+	draw_collider_rect(rect)
 }

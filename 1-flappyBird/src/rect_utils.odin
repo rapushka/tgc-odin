@@ -2,16 +2,19 @@ package flappy_bird
 
 import rl "vendor:raylib"
 
-// accepts any two opposing corners
-create_rect :: proc(corner_a, corner_b: Vec2) -> rl.Rectangle {
-	center := (corner_b + corner_a) / 2
-	size := corner_b - corner_a
+Rect :: struct {
+	center: Vec2,
+	sizes:  Vec2,
+}
 
-	// TODO: `rl.Rectangle`'s x/y are actually top-left corner, not center
-	return {
-		x      = center.x,
-		y      = center.y,
-		width  = abs(size.x),
-		height = abs(size.y),
-	}
+// accepts any two opposing corners
+create_rect_from_corners :: proc(corner_a, corner_b: Vec2) -> Rect {
+	center := (corner_b + corner_a) / 2
+	sizes := abs_vec2(corner_b - corner_a)
+
+	return {center, sizes}
+}
+
+abs_vec2 :: proc(value: Vec2) -> Vec2 {
+	return {abs(value.x), abs(value.y)}
 }

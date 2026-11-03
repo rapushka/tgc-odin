@@ -50,7 +50,10 @@ draw_collider_circle :: proc(position: Vec2, radius: f32) {
 	rl.DrawCircleLinesV(position, radius, rl.GREEN)
 }
 
-draw_collider_rect :: proc(position: Vec2, sizes: Vec2) {
+draw_collider_rect :: proc(rect: Rect) {
+	position := rect.center
+	sizes := rect.sizes
+
 	x := i32(position.x) - i32(sizes.x) / 2
 	y := i32(position.y) - i32(sizes.y) / 2
 
