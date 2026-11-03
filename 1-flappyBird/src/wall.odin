@@ -15,6 +15,8 @@ COLLIDER_PIPE_TOP: Vec2 = {70, 70}
 @(rodata)
 COLLIDER_PIPE_SIDE: Vec2 = {70, 100}
 
+PIPE_WIDTH :: 70
+
 Wall :: struct {
 	x_position: f32,
 	center_y:   f32,
@@ -68,13 +70,25 @@ draw_pipe :: proc(x, y: f32, going_down: bool, assets: Assets) {
 	y := y
 	direction: f32 = going_down ? 1 : -1
 
+	left_top: Vec2 = {
+		x - (PIPE_WIDTH / 2),
+		y - (COLLIDER_PIPE_TOP.y / 2 * direction),
+	}
+	right_bottom: Vec2 = {
+		left_top.x + PIPE_WIDTH,
+		left_top.y + (1_000 * direction),
+	}
+
+	rect := create_rect(left_top, right_bottom)
+
 	draw_texture(assets.pipe_tip, {x, y}, !going_down)
-	draw_collider_rect({x, y}, COLLIDER_PIPE_TOP)
+	// draw_collider_rect({x, y}, COLLIDER_PIPE_TOP)
 
 	for i := 1; i < 5; i += 1 {
 		y += 100.0 * direction
 
 		draw_texture(assets.pipe_mid, {x, y}, !going_down)
-		draw_collider_rect({x, y}, COLLIDER_PIPE_SIDE)
+		// draw_collider_rect({x, y}, COLLIDER_PIPE_SIDE)
 	}
+	draw_collider_rect({rect.x, rect.y}, {rect.width, rect.height})
 }

@@ -73,4 +73,16 @@ main :: proc() {
 check_player_collisions :: proc(game: ^Game) {
 	player := game.player
 	walls := game.walls
+
+	for wall in walls {
+		center := wall.center_y
+
+		bottom_pipe_start_y := center + GAP_HALF_HEIGHT
+		top_pipe_start_y := center - GAP_HALF_HEIGHT
+
+		// TODO
+		wall_rect: rl.Rectangle
+
+		rl.CheckCollisionCircleRec(player.position, COLLIDER_PLAYER_RADIUS, wall_rect)
+	}
 }
