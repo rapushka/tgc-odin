@@ -54,5 +54,7 @@ draw_collider_rect :: proc(position: Vec2, sizes: Vec2) {
 	x := i32(position.x) - i32(sizes.x) / 2
 	y := i32(position.y) - i32(sizes.y) / 2
 
+	color := rl.Color{0, 228, 48, 150}
+	rl.DrawRectangle(x, y, i32(sizes.x), i32(sizes.y), color)
 	rl.DrawRectangleLines(x, y, i32(sizes.x), i32(sizes.y), rl.GREEN)
 }
