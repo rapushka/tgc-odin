@@ -41,7 +41,7 @@ main :: proc() {
 	}
 
 	game := Game {
-		player = player,
+		player = player, // TODO: THIS IS COPY OF STRUCT, NEED FIX
 		walls  = make([dynamic]Wall),
 		assets = assets,
 	}
@@ -66,7 +66,7 @@ main :: proc() {
 		rl.ClearBackground({160, 200, 255, 255})
 
 		draw_player(player, game.assets)
-		draw_pipes(&game)
+		draw_walls(&game)
 	}
 }
 
@@ -74,15 +74,15 @@ check_player_collisions :: proc(game: ^Game) {
 	player := game.player
 	walls := game.walls
 
+	player_circle := circle_from_center(player.position, COLLIDER_PLAYER_RADIUS)
+
 	for wall in walls {
 		center := wall.center_y
 
 		bottom_pipe_start_y := center + GAP_HALF_HEIGHT
 		top_pipe_start_y := center - GAP_HALF_HEIGHT
 
-		// TODO
-		wall_rect: rl.Rectangle
-
-		rl.CheckCollisionCircleRec(player.position, COLLIDER_PLAYER_RADIUS, wall_rect)
+		// rect_from_corners()
+		// collided := check_collision_circle_rect(player_circle, )
 	}
 }

@@ -17,6 +17,7 @@ COLLIDER_PIPE_SIDE: Vec2 = {70, 100}
 
 PIPE_WIDTH :: 70
 
+// wall is a pair of pipes
 Wall :: struct {
 	x_position: f32,
 	center_y:   f32,
@@ -29,15 +30,6 @@ spawn_new_walls :: proc(game: ^Game) {
 	if distance >= PIPE_INTERVAL {
 		spawn_pipe(game)
 	}
-}
-
-spawn_pipe :: proc(game: ^Game) {
-	random_offset := rl.GetRandomValue(-100, 100)
-	wall := Wall {
-		center_y   = 200 + f32(random_offset),
-		x_position = f32(PIPE_SPAWN_X),
-	}
-	append(&game.walls, wall)
 }
 
 move_walls :: proc(game: ^Game, delta_time: f32) {
@@ -54,41 +46,24 @@ despawn_old_walls :: proc(game: ^Game) {
 	}
 }
 
-draw_pipes :: proc(game: ^Game) {
-	for wall in game.walls {
-		center := wall.center_y
+get_pipes_of_wall :: proc(wall: Wall) -> [2]Pipe {
+	center := wall.center_y
 
-		bottom_pipe_start_y := center + GAP_HALF_HEIGHT
-		top_pipe_start_y := center - GAP_HALF_HEIGHT
+	top_tip_y := center - GAP_HALF_HEIGHT
+	bottom_tip_y := center + GAP_HALF_HEIGHT
 
-		draw_pipe(wall.x_position, bottom_pipe_start_y, true, game.assets)
-		draw_pipe(wall.x_position, top_pipe_start_y, false, game.assets)
+	return {
+		Pipe{tip_position = {wall.x_position, top_tip_y}, direction = .Up},
+		Pipe{tip_position = {wall.x_position, bottom_tip_y}, direction = .Down},
 	}
 }
 
-draw_pipe :: proc(x, y: f32, going_down: bool, assets: Assets) {
-	y := y
-	direction: f32 = going_down ? 1 : -1
+draw_walls :: proc(game: ^Game) {
+	for wall in game.walls {
+		pipes := get_pipes_of_wall(wall)
 
-	left_top: Vec2 = {
-		x - (PIPE_WIDTH / 2),
-		y - (COLLIDER_PIPE_TOP.y / 2 * direction),
+		for pipe in pipes {
+			draw_pipe(pipe, game.assets)
+		}
 	}
-	right_bottom: Vec2 = {
-		left_top.x + PIPE_WIDTH,
-		left_top.y + (1_000 * direction),
-	}
-
-	rect := create_rect_from_corners(left_top, right_bottom)
-
-	draw_texture(assets.pipe_tip, {x, y}, !going_down)
-	// draw_collider_rect({x, y}, COLLIDER_PIPE_TOP)
-
-	for i := 1; i < 5; i += 1 {
-		y += 100.0 * direction
-
-		draw_texture(assets.pipe_mid, {x, y}, !going_down)
-		// draw_collider_rect({x, y}, COLLIDER_PIPE_SIDE)
-	}
-	draw_collider_rect(rect)
 }
