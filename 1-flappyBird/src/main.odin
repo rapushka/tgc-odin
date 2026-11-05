@@ -1,5 +1,6 @@
 package flappy_bird
 
+import "core:fmt"
 import rl "vendor:raylib"
 
 Vec2 :: [2]f32
@@ -8,7 +9,7 @@ SCREEN_WIDTH :: 800
 SCREEN_HEIGHT :: 450
 
 Game :: struct {
-	player: Player,
+	player: ^Player,
 	walls:  [dynamic]Wall,
 	assets: Assets,
 }
@@ -41,7 +42,7 @@ main :: proc() {
 	}
 
 	game := Game {
-		player = player, // TODO: THIS IS COPY OF STRUCT, NEED FIX
+		player = &player,
 		walls  = make([dynamic]Wall),
 		assets = assets,
 	}
@@ -52,7 +53,7 @@ main :: proc() {
 	for !rl.WindowShouldClose() {
 		// # update
 		delta_time := rl.GetFrameTime()
-		handle_player(&player, delta_time)
+		handle_player(game.player, delta_time)
 		move_walls(&game, delta_time)
 		spawn_new_walls(&game)
 		despawn_old_walls(&game)
@@ -65,7 +66,7 @@ main :: proc() {
 
 		rl.ClearBackground({160, 200, 255, 255})
 
-		draw_player(player, game.assets)
+		draw_player(&game)
 		draw_walls(&game)
 	}
 }
@@ -77,12 +78,15 @@ check_player_collisions :: proc(game: ^Game) {
 	player_circle := circle_from_center(player.position, COLLIDER_PLAYER_RADIUS)
 
 	for wall in walls {
-		center := wall.center_y
+		pipes := get_pipes_of_wall(wall)
+		for pipe in pipes {
+			pipe_rect := rect_pipe(pipe)
 
-		bottom_pipe_start_y := center + GAP_HALF_HEIGHT
-		top_pipe_start_y := center - GAP_HALF_HEIGHT
+			is_collided := check_collision_circle_rect(player_circle, pipe_rect)
 
-		// rect_from_corners()
-		// collided := check_collision_circle_rect(player_circle, )
+			if is_collided {
+				player.is_alive = false
+			}
+		}
 	}
 }

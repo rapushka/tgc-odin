@@ -12,7 +12,6 @@ VELOCITY_MAX :: 300.0 // down
 
 COLLIDER_PLAYER_RADIUS :: 20
 
-
 Player :: struct {
 	position:    Vec2,
 	y_velocity:  f32,
@@ -42,7 +41,10 @@ handle_player :: proc(player: ^Player, delta_time: f32) {
 	}
 }
 
-draw_player :: proc(player: Player, assets: Assets) {
+draw_player :: proc(game: ^Game) {
+	player := game.player
+	assets := game.assets
+
 	_, is_going_up := player.up_duration.?
 	player_texture := is_going_up ? assets.player_up : assets.player_down
 
