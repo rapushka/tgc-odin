@@ -43,7 +43,7 @@ spawn_pipe :: proc(game: ^Game) {
 	append(&game.walls, wall)
 }
 
-draw_pipe :: proc(pipe: Pipe, assets: Assets) {
+draw_pipe :: proc(pipe: Pipe, assets: ^Assets) {
 	x, y := expand_values(pipe.tip_position)
 	is_going_down := pipe.direction == .Down
 	direction: f32 = is_going_down ? 1 : -1

@@ -11,7 +11,7 @@ SCREEN_HEIGHT :: 450
 Game :: struct {
 	player: ^Player,
 	walls:  [dynamic]Wall,
-	assets: Assets,
+	assets: ^Assets,
 }
 
 Assets :: struct {
@@ -44,7 +44,7 @@ main :: proc() {
 	game := Game {
 		player = &player,
 		walls  = make([dynamic]Wall),
-		assets = assets,
+		assets = &assets,
 	}
 	defer delete(game.walls)
 
