@@ -9,9 +9,9 @@ SCREEN_WIDTH :: 800
 SCREEN_HEIGHT :: 450
 
 Game :: struct {
-	player: ^Player,
+	player: Player,
+	assets: Assets,
 	walls:  [dynamic]Wall,
-	assets: ^Assets,
 }
 
 Assets :: struct {
@@ -27,38 +27,34 @@ main :: proc() {
 	defer rl.CloseWindow()
 	rl.SetTargetFPS(60)
 
-	assets := Assets {
-		player_up   = rl.LoadTexture("player-up.png"),
-		player_down = rl.LoadTexture("player-down.png"),
-		player_dead = rl.LoadTexture("player-ded.png"),
-		pipe_tip    = rl.LoadTexture("pipe-tip.png"),
-		pipe_mid    = rl.LoadTexture("pipe-mid.png"),
-	}
-
-	player := Player {
-		position   = {90, 90},
-		y_velocity = 0.0,
-		is_alive   = true,
-	}
-
 	game := Game {
-		player = &player,
-		walls  = make([dynamic]Wall),
-		assets = &assets,
+		walls = make([dynamic]Wall),
+		player = Player {
+			position = {90, 90},
+			is_alive = true,
+		},
+		assets = Assets {
+			player_up   = rl.LoadTexture("player-up.png"),
+			player_down = rl.LoadTexture("player-down.png"),
+			player_dead = rl.LoadTexture("player-ded.png"),
+			pipe_tip    = rl.LoadTexture("pipe-tip.png"),
+			pipe_mid    = rl.LoadTexture("pipe-mid.png"),
+		},
 	}
 	defer delete(game.walls)
 
-	spawn_pipe(&game)
+	spawn_new_walls(&game.walls)
 
 	for !rl.WindowShouldClose() {
 		// # update
 		delta_time := rl.GetFrameTime()
-		handle_player(game.player, delta_time)
-		move_walls(&game, delta_time)
-		spawn_new_walls(&game)
-		despawn_old_walls(&game)
 
-		check_player_collisions(&game)
+		handle_player(&game.player, delta_time)
+		move_walls(game.walls[:], delta_time)
+		spawn_new_walls(&game.walls)
+		despawn_old_walls(&game.walls)
+
+		check_player_collisions(&game.player, game.walls[:])
 
 		// # draw
 		rl.BeginDrawing()
@@ -66,15 +62,12 @@ main :: proc() {
 
 		rl.ClearBackground({160, 200, 255, 255})
 
-		draw_player(&game)
-		draw_walls(&game)
+		draw_player(game.player, game.assets)
+		draw_walls(game.walls[:], game.assets)
 	}
 }
 
-check_player_collisions :: proc(game: ^Game) {
-	player := game.player
-	walls := game.walls
-
+check_player_collisions :: proc(player: ^Player, walls: []Wall) {
 	player_circle := circle_from_center(player.position, COLLIDER_PLAYER_RADIUS)
 
 	for wall in walls {

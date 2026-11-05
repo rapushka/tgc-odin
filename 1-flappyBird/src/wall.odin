@@ -23,26 +23,45 @@ Wall :: struct {
 	center_y:   f32,
 }
 
-spawn_new_walls :: proc(game: ^Game) {
-	last_wall := game.walls[len(game.walls) - 1]
+spawn_new_walls :: proc(walls: ^[dynamic]Wall) {
+	if len(walls) == 0 {
+		spawn_wall(walls)
+		return
+	}
+
+	last_wall := walls[len(walls) - 1]
 	distance := PIPE_SPAWN_X - last_wall.x_position
 
 	if distance >= PIPE_INTERVAL {
-		spawn_pipe(game)
+		spawn_wall(walls)
 	}
 }
 
-move_walls :: proc(game: ^Game, delta_time: f32) {
-	for &wall in game.walls {
+@(private = "file")
+spawn_wall :: proc(walls: ^[dynamic]Wall) {
+	random_offset := rl.GetRandomValue(-100, 100)
+	wall := Wall {
+		center_y   = 200 + f32(random_offset),
+		x_position = f32(PIPE_SPAWN_X),
+	}
+	append(walls, wall)
+}
+
+move_walls :: proc(walls: []Wall, delta_time: f32) {
+	for &wall in walls {
 		wall.x_position -= PIPE_MOVEMENT_SPEED * delta_time
 	}
 }
 
-despawn_old_walls :: proc(game: ^Game) {
-	first_wall := game.walls[0]
+despawn_old_walls :: proc(walls: ^[dynamic]Wall) {
+	if len(walls) == 0 {
+		return
+	}
+
+	first_wall := walls[0]
 
 	if first_wall.x_position <= PIPE_DESPAWN_X {
-		pop_front(&game.walls)
+		pop_front(walls)
 	}
 }
 
@@ -58,12 +77,12 @@ get_pipes_of_wall :: proc(wall: Wall) -> [2]Pipe {
 	}
 }
 
-draw_walls :: proc(game: ^Game) {
-	for wall in game.walls {
+draw_walls :: proc(walls: []Wall, assets: Assets) {
+	for wall in walls {
 		pipes := get_pipes_of_wall(wall)
 
 		for pipe in pipes {
-			draw_pipe(pipe, game.assets)
+			draw_pipe(pipe, assets)
 		}
 	}
 }

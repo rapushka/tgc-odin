@@ -34,16 +34,7 @@ rect_pipe :: proc(pipe: Pipe) -> Rect {
 	return rect_from_corners(left_top, right_bottom)
 }
 
-spawn_pipe :: proc(game: ^Game) {
-	random_offset := rl.GetRandomValue(-100, 100)
-	wall := Wall {
-		center_y   = 200 + f32(random_offset),
-		x_position = f32(PIPE_SPAWN_X),
-	}
-	append(&game.walls, wall)
-}
-
-draw_pipe :: proc(pipe: Pipe, assets: ^Assets) {
+draw_pipe :: proc(pipe: Pipe, assets: Assets) {
 	x, y := expand_values(pipe.tip_position)
 	is_going_down := pipe.direction == .Down
 	direction: f32 = is_going_down ? 1 : -1

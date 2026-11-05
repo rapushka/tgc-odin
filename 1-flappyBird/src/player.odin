@@ -41,10 +41,7 @@ handle_player :: proc(player: ^Player, delta_time: f32) {
 	}
 }
 
-draw_player :: proc(game: ^Game) {
-	player := game.player
-	assets := game.assets
-
+draw_player :: proc(player: Player, assets: Assets) {
 	_, is_going_up := player.up_duration.?
 	player_texture := is_going_up ? assets.player_up : assets.player_down
 
