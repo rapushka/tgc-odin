@@ -1,6 +1,5 @@
 package flappy_bird
 
-import "core:fmt"
 import rl "vendor:raylib"
 
 Vec2 :: [2]f32
@@ -10,7 +9,6 @@ SCREEN_HEIGHT :: 450
 
 Game :: struct {
 	player: Player,
-	assets: Assets,
 	walls:  [dynamic]Wall,
 }
 
@@ -27,18 +25,19 @@ main :: proc() {
 	defer rl.CloseWindow()
 	rl.SetTargetFPS(60)
 
+	assets := Assets {
+		player_up   = rl.LoadTexture("player-up.png"),
+		player_down = rl.LoadTexture("player-down.png"),
+		player_dead = rl.LoadTexture("player-ded.png"),
+		pipe_tip    = rl.LoadTexture("pipe-tip.png"),
+		pipe_mid    = rl.LoadTexture("pipe-mid.png"),
+	}
+
 	game := Game {
 		walls = make([dynamic]Wall),
 		player = Player {
 			position = {90, 90},
 			is_alive = true,
-		},
-		assets = Assets {
-			player_up   = rl.LoadTexture("player-up.png"),
-			player_down = rl.LoadTexture("player-down.png"),
-			player_dead = rl.LoadTexture("player-ded.png"),
-			pipe_tip    = rl.LoadTexture("pipe-tip.png"),
-			pipe_mid    = rl.LoadTexture("pipe-mid.png"),
 		},
 	}
 	defer delete(game.walls)
@@ -62,8 +61,8 @@ main :: proc() {
 
 		rl.ClearBackground({160, 200, 255, 255})
 
-		draw_player(game.player, game.assets)
-		draw_walls(game.walls[:], game.assets)
+		draw_player(game.player, assets)
+		draw_walls(game.walls[:], assets)
 	}
 }
 
@@ -79,6 +78,7 @@ check_player_collisions :: proc(player: ^Player, walls: []Wall) {
 
 			if is_collided {
 				player.is_alive = false
+				return
 			}
 		}
 	}

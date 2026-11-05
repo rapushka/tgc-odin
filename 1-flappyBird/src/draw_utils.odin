@@ -1,7 +1,5 @@
 package flappy_bird
 
-import la "core:math/linalg"
-import "vendor:directx/d3d12"
 import rl "vendor:raylib"
 
 draw_texture :: proc {
